@@ -1,0 +1,20 @@
+#!/bin/bash
+#In house bash script I use to parse illumina fastq files to Periscope (sub genomic RNA classification code developed by Sheffield bioinformatics core).
+
+total_files=`find -name '*.fastq.gz' | wc -l`
+arr=( $(ls *.fastq.gz) )
+echo "Looping periscope for samples in the directory"
+echo "**************************"
+printf "\n"
+echo "process started" >> log.log
+echo "---------------" >> log.log
+
+for ((i=0; i<$total_files; i+=2))
+{
+sample_name=`echo ${arr[$i]} | awk -F "-" '{print $1}'`
+echo "Periscope running for $sample_name"
+printf "\n"
+echo "periscope --fastq ${arr[$i]} ${arr[$i+1]} --technology illumina --artic-primers V3 --resources ~/bin/periscope/periscope/resources --sample $sample_name --output-prefix $sample_name --threads 4" >> commands_log.txt
+
+periscope --fastq ${arr[$i]} ${arr[$i+1]} --technology illumina --artic-primers V3 --resources ~/bin/periscope/periscope/resources --sample $sample_name --output-prefix $sample_name --threads 4
+}
