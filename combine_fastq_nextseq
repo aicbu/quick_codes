@@ -1,0 +1,19 @@
+#!bin/bash
+
+total_files=`find -name '*.fastq.gz' | wc -l`
+arr=( $(ls *.fastq.gz) )
+echo "Looping periscope for samples in the directory"
+echo "**************************"
+printf "\n"
+
+
+for ((i=0; i<$total_files; i+=8))
+{
+sample_name=`echo ${arr[$i]} | awk -F "_" '{print $1}'`
+echo "concatanating $sample_name forward reads" 
+cat $sample_name*_L00*_R1_001.fastq.gz > $sample_name-R1.fastq.gz
+echo "concatanating $sample_name reverse reads" 
+cat $sample_name*_L00*_R2_001.fastq.gz > $sample_name-R2.fastq.gz
+printf "\n"
+}
+
